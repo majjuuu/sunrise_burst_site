@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SunRISE Burst Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <p class="brand-name">SunRISE Burst Detector</p>
+          <p class="brand-sub">Solar radio burst detection for e-Callisto spectrograms</p>
+        </div>
+      </div>
+      <span class="badge badge-demo" title="The detection model is not connected yet">Demo mode</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT: upload panel -->
+    <section class="panel upload" aria-labelledby="upload-title">
+      <h1 id="upload-title" class="panel-title">Upload an observation</h1>
+      <p class="panel-lede">Upload a FIT file from your station. The model scans it in 15-minute windows and marks every burst it finds.</p>
+
+      <form id="upload-form" novalidate>
+        <label class="dropzone" id="dropzone" for="file-input">
+          <input type="file" id="file-input" accept=".fit,.fits,.fit.gz,.gz">
+          <span class="dropzone-icon" aria-hidden="true"></span>
+          <span class="dropzone-main" id="dropzone-main">Drop a .fit or .fit.gz file here</span>
+          <span class="dropzone-sub" id="dropzone-sub">or click to choose a file</span>
+        </label>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="station">Station</label>
+            <select id="station">
+              <option value="marquette">Marquette</option>
+              <option value="peach-mountain">Peach Mountain (UMich)</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="obs-date">Observation date (UTC)</label>
+            <input type="date" id="obs-date" value="2026-10-14">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="run-btn">Run detection</button>
+        <p class="form-note" id="form-note" role="status">No file chosen. The sample observation is shown on the right.</p>
+      </form>
+
+      <div class="explainer">
+        <h2 class="explainer-title">How detection works</h2>
+        <ol class="steps">
+          <li><b>Validate</b> the file is real FITS data</li>
+          <li><b>Clean</b> it with the training pipeline's preprocessing</li>
+          <li><b>Cut</b> it into 15-minute windows</li>
+          <li><b>Detect</b> bursts with the YOLOv8 model</li>
+          <li><b>Convert</b> each box to UTC start and end times</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- RIGHT: results panel -->
+    <section class="panel results" aria-labelledby="results-title">
+      <div class="results-head">
+        <div>
+          <h2 id="results-title" class="panel-title">Results</h2>
+          <p class="results-meta" id="results-meta">Sample observation · Marquette · 2026-10-14 · 18:00–18:15 UTC</p>
+        </div>
+        <span class="badge badge-sample" id="results-badge">Synthetic sample data</span>
+      </div>
+
+      <div class="summary" id="summary">
+        <div class="stat"><span class="stat-num" id="stat-count">0</span><span class="stat-label">bursts found</span></div>
+        <div class="stat"><span class="stat-num" id="stat-types">—</span><span class="stat-label">types</span></div>
+        <div class="stat"><span class="stat-num" id="stat-windows">1</span><span class="stat-label">15-min window</span></div>
+      </div>
+
+      <figure class="spectro">
+        <div class="spectro-frame">
+          <canvas id="spectrogram" width="900" height="320" aria-label="Spectrogram with detected bursts outlined"></canvas>
+          <div class="scanline" id="scanline" hidden></div>
+        </div>
+        <figcaption>
+          <span>Time (UTC) →</span>
+          <span class="legend"><span class="legend-box" aria-hidden="true"></span> Detected burst</span>
+          <span>Frequency: 45–870 MHz, low at bottom</span>
+        </figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table class="detections">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Type</th>
+              <th scope="col">Start (UTC)</th>
+              <th scope="col">End (UTC)</th>
+              <th scope="col">Frequency (MHz)</th>
+              <th scope="col">Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="detections-body"></tbody>
+        </table>
+      </div>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn-secondary" id="copy-csv">Copy results as CSV</button>
+        <button type="button" class="btn btn-secondary" id="download-csv">Download CSV</button>
+        <span class="action-note" id="action-note" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>SunRISE Ground Radio Lab · University of Michigan · Detection model: YOLOv8 (TransferLearning_CNN). Demo build: results are a synthetic example until the model is connected.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
