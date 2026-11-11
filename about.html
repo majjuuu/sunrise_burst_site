@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>About the research · SunRISE Burst Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <p class="brand-name">SunRISE Burst Detector</p>
+          <p class="brand-sub">Solar radio burst detection and classification for e-Callisto spectrograms</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="index.html">Detector</a>
+          <a href="about.html" aria-current="page">About the research</a>
+        </nav>
+        <span class="badge badge-demo">Demo mode</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="about-layout">
+    <section class="panel" aria-labelledby="about-title">
+      <h1 id="about-title">About the research</h1>
+      <p>We are developing a website to help inspect solar radio observations from e-Callisto stations. The planned workflow accepts FIT files, processes observations in 15-minute windows, and uses a YOLOv8 model to locate and classify candidate radio bursts.</p>
+      <p class="about-note">This site is currently a front-end demo. The spectrogram and detection shown on the Detector page are synthetic examples; uploaded files are not analyzed until a backend is connected.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="team-title">
+      <h2 id="team-title">Team</h2>
+      <p>Erica Ma and Praneel work on SunRISE software, detection, and classification. This demo is intended for Marquette students working with e-Callisto observations.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="next-title">
+      <h2 id="next-title">What comes next</h2>
+      <ul>
+        <li>Connect the upload form to the detection backend.</li>
+        <li>Display model results with burst type, time, frequency range, and confidence.</li>
+        <li>Replace the synthetic sample with observations and outputs that the team has reviewed for public use.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>SunRISE Ground Radio Lab · University of Michigan · Demo build</p>
+  </footer>
+</body>
+</html>

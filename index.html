@@ -16,10 +16,16 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <div>
           <p class="brand-name">SunRISE Burst Detector</p>
-          <p class="brand-sub">Solar radio burst detection for e-Callisto spectrograms</p>
+          <p class="brand-sub">Solar radio burst detection and classification for e-Callisto spectrograms</p>
         </div>
       </div>
-      <span class="badge badge-demo" title="The detection model is not connected yet">Demo mode</span>
+      <div class="header-actions">
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="index.html" aria-current="page">Detector</a>
+          <a href="about.html">About the research</a>
+        </nav>
+        <span class="badge badge-demo" title="The detection model is not connected yet">Demo mode</span>
+      </div>
     </div>
   </header>
 
@@ -27,7 +33,7 @@
     <!-- LEFT: upload panel -->
     <section class="panel upload" aria-labelledby="upload-title">
       <h1 id="upload-title" class="panel-title">Upload an observation</h1>
-      <p class="panel-lede">Upload a FIT file from your station. The model scans it in 15-minute windows and marks every burst it finds.</p>
+      <p class="panel-lede">Upload a FIT file from your station. The planned model scans 15-minute windows, locates candidate bursts, and classifies their type.</p>
 
       <form id="upload-form" novalidate>
         <label class="dropzone" id="dropzone" for="file-input">
@@ -52,18 +58,18 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="run-btn">Run detection</button>
+        <button type="submit" class="btn btn-primary" id="run-btn">Run detection and classification</button>
         <p class="form-note" id="form-note" role="status">No file chosen. The sample observation is shown on the right.</p>
       </form>
 
       <div class="explainer">
-        <h2 class="explainer-title">How detection works</h2>
+        <h2 class="explainer-title">How detection and classification work</h2>
         <ol class="steps">
           <li><b>Validate</b> the file is real FITS data</li>
           <li><b>Clean</b> it with the training pipeline's preprocessing</li>
           <li><b>Cut</b> it into 15-minute windows</li>
-          <li><b>Detect</b> bursts with the YOLOv8 model</li>
-          <li><b>Convert</b> each box to UTC start and end times</li>
+          <li><b>Detect and classify</b> candidate bursts by type with the planned YOLOv8 model</li>
+          <li><b>Report</b> each burst's type, UTC time range, frequency range, and confidence</li>
         </ol>
       </div>
     </section>

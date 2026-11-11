@@ -26,8 +26,6 @@ const CONFIG = {
  * ------------------------------------------------------------------ */
 const SAMPLE_DETECTIONS = [
   { type: "III", startSec: 218, endSec: 252, freqLow: 110, freqHigh: 790, confidence: 0.91 },
-  { type: "III", startSec: 543, endSec: 566, freqLow: 190, freqHigh: 860, confidence: 0.78 },
-  { type: "II",  startSec: 655, endSec: 862, freqLow: 55,  freqHigh: 440, confidence: 0.64 },
 ];
 
 /* ------------------------------------------------------------------
@@ -109,20 +107,11 @@ function burstIntensity(sec, mhz) {
   // Type III: fast drift from high to low frequency over a few tens of seconds
   for (const b of [
     { t0: 222, dur: 24, fHi: 780, fLo: 120, amp: 0.75 },
-    { t0: 546, dur: 16, fHi: 850, fLo: 200, amp: 0.6 },
   ]) {
     if (mhz < b.fLo || mhz > b.fHi) continue;
     const arrival = b.t0 + ((b.fHi - mhz) / (b.fHi - b.fLo)) * b.dur;
     const d = sec - arrival;
     v += b.amp * Math.exp(-(d * d) / (2 * 3.5 * 3.5));
-  }
-  // Type II: slow drift band plus a fainter harmonic at twice the frequency
-  if (sec > 660 && sec < 860) {
-    const f = 210 * Math.exp(-(sec - 660) / 160);        // fundamental drifts down slowly
-    for (const [center, amp] of [[f, 0.55], [2 * f, 0.32]]) {
-      const d = mhz - center;
-      v += amp * Math.exp(-(d * d) / (2 * 9 * 9));
-    }
   }
   return v;
 }
@@ -317,7 +306,7 @@ function setFile(file) {
   dropzone.classList.add("has-file");
   document.getElementById("dropzone-main").textContent = file.name;
   document.getElementById("dropzone-sub").textContent = `${(file.size / 1024 / 1024).toFixed(1)} MB · click to change`;
-  note.textContent = "Ready. Press Run detection.";
+  note.textContent = "Ready. Press Run detection and classification.";
 }
 
 fileInput.addEventListener("change", () => setFile(fileInput.files[0]));
@@ -352,7 +341,7 @@ form.addEventListener("submit", async (e) => {
   } finally {
     stopScan();
     runBtn.disabled = false;
-    runBtn.textContent = "Run detection";
+    runBtn.textContent = "Run detection and classification";
   }
 });
 
