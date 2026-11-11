@@ -306,7 +306,7 @@ function setFile(file) {
   dropzone.classList.add("has-file");
   document.getElementById("dropzone-main").textContent = file.name;
   document.getElementById("dropzone-sub").textContent = `${(file.size / 1024 / 1024).toFixed(1)} MB · click to change`;
-  note.textContent = "Ready. Press Run detection and classification.";
+  note.textContent = "Ready. Press Run Detection and Classification.";
 }
 
 fileInput.addEventListener("change", () => setFile(fileInput.files[0]));
@@ -341,7 +341,7 @@ form.addEventListener("submit", async (e) => {
   } finally {
     stopScan();
     runBtn.disabled = false;
-    runBtn.textContent = "Run detection and classification";
+    runBtn.textContent = "Run Detection and Classification";
   }
 });
 
