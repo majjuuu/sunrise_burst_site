@@ -29,25 +29,39 @@
     </div>
   </header>
 
+  <div class="logo-strip" aria-label="Project affiliations">
+    <img class="logo-michigan" src="assets/michigan.png" alt="University of Michigan">
+    <img class="logo-sunrise" src="assets/sunrise.png" alt="SunRISE, Sun Radio Interferometer Space Experiment">
+    <img class="logo-clasp" src="assets/clasp.png" alt="Climate and Space Sciences and Engineering">
+  </div>
+
   <main class="about-layout">
     <section class="panel" aria-labelledby="about-title">
       <h1 id="about-title">About the research</h1>
-      <p>We are developing a website to help inspect solar radio observations from e-Callisto stations. The planned workflow accepts FIT files, processes observations in 15-minute windows, and uses a YOLOv8 model to locate and classify candidate radio bursts.</p>
-      <p class="about-note">This site is currently a front-end demo. The spectrogram and detection shown on the Detector page are synthetic examples; uploaded files are not analyzed until a backend is connected.</p>
+      <p>As part of the MDP Heliophysics research project, the software team is improving the quality and accessibility of spectrograms from the Ground Radio Lab and Long Wavelength Array antennas. The long-term goal is to help researchers and students detect and classify solar radio bursts.</p>
+      <p>Solar radio bursts are high-intensity radio emissions from the Sun. Their patterns in a spectrogram can help distinguish different burst types.</p>
     </section>
 
     <section class="panel" aria-labelledby="team-title">
-      <h2 id="team-title">Team</h2>
-      <p>Erica Ma and Praneel work on SunRISE software, detection, and classification. This demo is intended for Marquette students working with e-Callisto observations.</p>
+      <h2 id="team-title">Software team</h2>
+      <p>Maria Hermann, Zoe Fisch, Ariv Bhatnagar, Divya Shekar, Ella Ricci, Praneel Basu, and Erica Ma.</p>
+      <p>The team is building a public platform for viewing spectrograms and, eventually, running the preprocessing, detection, and classification models. A key goal is to make observations accessible to students at Marquette High School.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="data-title">
+      <h2 id="data-title">Data and model workflow</h2>
+      <p>Training data comes from public datasets and the team's observations at Marquette and Peach Mountain. At Marquette, an LWA antenna, e-Callisto receiver, and CALLISTO software produce FIT files for daily upload.</p>
+      <p>The detection approach uses YOLOv8 to locate candidate bursts with bounding boxes in spectrogram tiles. A separate classification model for solar radio burst types is planned.</p>
     </section>
 
     <section class="panel" aria-labelledby="next-title">
-      <h2 id="next-title">What comes next</h2>
+      <h2 id="next-title">Project goals and next steps</h2>
       <ul>
-        <li>Connect the upload form to the detection backend.</li>
-        <li>Display model results with burst type, time, frequency range, and confidence.</li>
-        <li>Replace the synthetic sample with observations and outputs that the team has reviewed for public use.</li>
+        <li>Improve detection accuracy and implement burst classification.</li>
+        <li>Grow the labeled dataset using Marquette and Peach Mountain observations.</li>
+        <li>Connect this website to the models and make spectrogram visualization and results easier to access.</li>
       </ul>
+      <p class="about-note">This site is currently a front-end demo. The spectrogram and detection on the Detector page are synthetic examples; uploaded files are not analyzed until a backend is connected.</p>
     </section>
   </main>
 

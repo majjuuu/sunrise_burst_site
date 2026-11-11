@@ -29,6 +29,12 @@
     </div>
   </header>
 
+  <div class="logo-strip" aria-label="Project affiliations">
+    <img class="logo-michigan" src="assets/michigan.png" alt="University of Michigan">
+    <img class="logo-sunrise" src="assets/sunrise.png" alt="SunRISE, Sun Radio Interferometer Space Experiment">
+    <img class="logo-clasp" src="assets/clasp.png" alt="Climate and Space Sciences and Engineering">
+  </div>
+
   <main class="layout">
     <!-- LEFT: upload panel -->
     <section class="panel upload" aria-labelledby="upload-title">
@@ -63,13 +69,14 @@
       </form>
 
       <div class="explainer">
-        <h2 class="explainer-title">How detection and classification work</h2>
+        <h2 class="explainer-title">How Detection and Classification Work</h2>
+        <p class="explainer-note">Planned research workflow; this demo currently shows synthetic results.</p>
         <ol class="steps">
-          <li><b>Validate</b> the file is real FITS data</li>
-          <li><b>Clean</b> it with the training pipeline's preprocessing</li>
-          <li><b>Cut</b> it into 15-minute windows</li>
-          <li><b>Detect and classify</b> candidate bursts by type with the planned YOLOv8 model</li>
-          <li><b>Report</b> each burst's type, UTC time range, frequency range, and confidence</li>
+          <li><b>Collect</b> solar radio observations as e-Callisto FIT files.</li>
+          <li><b>Preprocess</b> the spectrograms into tiles for model input.</li>
+          <li><b>Detect</b> candidate bursts and their bounding boxes with YOLOv8.</li>
+          <li><b>Classify</b> burst types with a separate model planned for future work.</li>
+          <li><b>Review</b> each result's time, frequency range, and confidence.</li>
         </ol>
       </div>
     </section>
