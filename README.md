@@ -52,4 +52,4 @@ Everything that talks to the model is in one function, `runDetection()` in `app.
 
 ## Owners
 
-Erica Ma and Praneel, SunRISE Software, Detection & Classification.
+Erica Ma and Praneel Basu, SunRISE Software, Detection & Classification.
