@@ -17,6 +17,21 @@ const CONFIG = {
   FREQ_MIN_MHZ: 45,               // frequency range shown on the plot
   FREQ_MAX_MHZ: 870,
   SAMPLE_START_UTC: "18:00:00",   // start time of the sample window
+  MIN_CONF: 0.05,                 // lowest confidence the backend returns (the model repo's eval setting)
+};
+
+/* ------------------------------------------------------------------
+ * How far to trust each burst type. Source: model repo RESULTS.md §7,
+ * 3-class detector (yolo_multi_assa), e-Callisto validation set, 3-seed mean,
+ * measured at confidence 0.05 with maxconf. NOT measured on own-station data.
+ *   Type II:  found 62% of the time, but median timing error 69 s
+ *   Type III: found 86%, median timing error 6.0 s
+ *   Type V:   found 50%; most typing mistakes are V labelled as III
+ * ------------------------------------------------------------------ */
+const TYPE_NOTES = {
+  II: "±~1 min timing",
+  III: "Most reliable (~6 s timing)",
+  V: "Low recall, may be III",
 };
 
 /* ------------------------------------------------------------------
@@ -26,6 +41,8 @@ const CONFIG = {
  * ------------------------------------------------------------------ */
 const SAMPLE_DETECTIONS = [
   { type: "III", startSec: 218, endSec: 252, freqLow: 110, freqHigh: 790, confidence: 0.91 },
+  { type: "V", startSec: 255, endSec: 310, freqLow: 110, freqHigh: 280, confidence: 0.18 },
+  { type: "II", startSec: 470, endSec: 740, freqLow: 90, freqHigh: 300, confidence: 0.47 },
 ];
 
 /* ------------------------------------------------------------------
@@ -112,6 +129,17 @@ function burstIntensity(sec, mhz) {
     const arrival = b.t0 + ((b.fHi - mhz) / (b.fHi - b.fLo)) * b.dur;
     const d = sec - arrival;
     v += b.amp * Math.exp(-(d * d) / (2 * 3.5 * 3.5));
+  }
+  // Type V: diffuse, low-frequency glow right after the Type III, little drift
+  if (mhz >= 110 && mhz <= 280) {
+    const d = sec - 280;
+    v += 0.28 * Math.exp(-(d * d) / (2 * 14 * 14));
+  }
+  // Type II: slow drift over several minutes in a narrow lane
+  if (mhz >= 90 && mhz <= 300) {
+    const arrival = 480 + ((300 - mhz) / (300 - 90)) * 240;
+    const d = sec - arrival;
+    v += 0.4 * Math.exp(-(d * d) / (2 * 12 * 12));
   }
   return v;
 }
@@ -221,10 +249,24 @@ async function runDetection(file, station, date) {
  * Results table, summary, and CSV
  * ------------------------------------------------------------------ */
 let currentRows = [];
+let lastResult = null;   // kept so the slider can re-filter without calling the backend again
+
+const confSlider = document.getElementById("conf-slider");
+const confValue = document.getElementById("conf-value");
+const confHint = document.getElementById("conf-hint");
 
 function renderResults(result) {
-  const dets = result.detections;
+  lastResult = result;
+  const minConf = Number(confSlider.value);
+  const dets = result.detections.filter((d) => d.confidence >= minConf);
   drawDetections(dets);
+
+  confValue.textContent = `${Math.round(minConf * 100)}%`;
+  const hidden = result.detections.length - dets.length;
+  confHint.textContent = (hidden ? `${hidden} lower-confidence ${hidden === 1 ? "box" : "boxes"} hidden. ` : "") +
+    (minConf > CONFIG.MIN_CONF
+      ? "The model's validation numbers were measured at 5%, so they don't apply at this setting."
+      : "Lower catches more bursts but adds false alarms. Higher means fewer false alarms but more misses.");
 
   const tbody = document.getElementById("detections-body");
   tbody.innerHTML = "";
@@ -244,7 +286,7 @@ function renderResults(result) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${r.n}</td>
-      <td><span class="type-pill">Type ${r.type}</span></td>
+      <td><span class="type-pill">Type ${r.type}</span><span class="type-note">${TYPE_NOTES[r.type] ?? ""}</span></td>
       <td class="mono">${r.start}</td>
       <td class="mono">${r.end}</td>
       <td class="mono">${r.freq}</td>
@@ -364,6 +406,8 @@ document.getElementById("download-csv").addEventListener("click", () => {
   URL.revokeObjectURL(a.href);
   actionNote.textContent = "Downloaded sunrise_detections.csv.";
 });
+
+confSlider.addEventListener("input", () => { if (lastResult) renderResults(lastResult); });
 
 /* First load: draw the sample and show its results so the page is never empty. */
 drawSpectrogram();

@@ -109,6 +109,12 @@
         </figcaption>
       </figure>
 
+      <div class="conf-filter">
+        <label for="conf-slider">Minimum confidence <output id="conf-value" for="conf-slider">5%</output></label>
+        <input type="range" id="conf-slider" min="0.05" max="0.95" step="0.05" value="0.05">
+        <p class="conf-hint" id="conf-hint" role="status"></p>
+      </div>
+
       <div class="table-wrap">
         <table class="detections">
           <thead>
